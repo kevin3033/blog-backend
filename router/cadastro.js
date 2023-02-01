@@ -3,36 +3,41 @@ const bcrypt = require('bcrypt')
 const bd = require("../bd/typeorm")
 
 router.post('/', async (req, res) => {
-    console.log(req.body)
-    let { nome, senha } = req.body
+    let { usuario, email, senha } = req.body
     let bdUsuario = bd.getRepository("usuarios")
-    let teste = await bdUsuario.findOneBy({email: nome})
-    if (teste) {
-        console.log("email já usado!. conta: ", teste)
-        return res.send("erro. esse email já está sendo utilizado. tente outro.")
+    let testeUsuario = await bdUsuario.findOneBy({usuario: usuario})
+    let testeEmail = await bdUsuario.findOneBy({email: email})
+    if (testeUsuario) {
+        console.log(`erro em tentativa de cadastro: usuario já existente. conta: ${testeUsuario}`)
+        return res.status(400).send({error: "erro. usuario já cadastrado"})
+    } else if (testeEmail) {
+        console.log(`erro em tentativa de cadastro: email já existente. conta: ${testeEmail}`)
+        return res.status(400).send({error: "erro. email já cadastrado"})
     } else {
         bcrypt.hash(senha, 2, async (err, hash) => {
             if (err) {
-                console.log("erro ao criptografar a senha. erro: ", err)
-                return res.send("ocorreu um erro no server. tente novamente mais tarde.")
+                console.log(`erro em tentativa de cadastro: erro ao criptografar a senha. erro: ${err}`)
+                return res.status(500).send({error: "ocorreu um erro no servidor. tente novamente mais tarde."})
             } else {
-
                 let novoUsuario = {
-                    email: nome,
+                    usuario: usuario,
+                    email: email,
                     password: hash
                 }
                 
                 bdUsuario.save(novoUsuario).then(usuarioSalvo => {
-                    console.log("usuario cadastrado!")
-                    res.json(usuarioSalvo)
+                    console.log(`sucesso em tentativa de cadastro: novo usuario cadastrado. conta: ${usuarioSalvo}`)
+                    res.status(200).send({ok: "usuario cadastrado."})
                 }).catch(err => {
-                    console.log("usuario não cadastrado... erro: ", err)
-                    res.send("não consegui cadastrar esse usuario")
+                    console.log(`erro em tentativa de cadastro: erro ao criptografar a senha. erro: ${err}`)
+                    return res.status(500).send({error: "ocorreu um erro no servidor. tente novamente mais tarde."})
                 })
             }        
         })
     }
 })
+
+/////// remover ou proteger método get
 
 router.get('/', (req, res) => {
     let bdUsuario = bd.getRepository("usuarios")

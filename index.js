@@ -13,7 +13,9 @@ bd.initialize()
         //rotas
         app.use("/cadastro", cadastro)
         app.use('/login', login)
-        app.listen(3000)
+        app.listen(3000, () => {
+            console.log("servidor iniciado. backend rodando.");
+        })
     })
     .catch(err => {
         console.log("erro ao se conectar ao banco de dados, servidor não iniciado. erro: ", err)

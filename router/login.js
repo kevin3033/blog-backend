@@ -5,26 +5,27 @@ const bd = require("../bd/typeorm")
 const chaveSecreta = require("../chaveSecreta")
 
 router.post('/', async (req, res) => {
-    let { nome, senha } = req.body
+    let { usuario, senha } = req.body
     let bdUsuario = bd.getRepository("usuarios")
-    let teste = await bdUsuario.findOneBy({email: nome})
+    let teste = await bdUsuario.findOneBy({usuario: usuario})
     if (!teste) {
-        console.log('erro ao achar o email no banco de dados.')
-        return res.send('email ou senha inseridos estão incorretos. ')
+        console.log(`erro em tentativa de login: usuario não existente.`)
+        return res.status(400).send({error: "erro. usuario não cadastrado"})
     } else {
-        let senhac = teste.password
-        bcrypt.compare(senha, senhac, (err, result) => {
+        let senhacerta = teste.password
+        bcrypt.compare(senha, senhacerta, (err, result) => {
             if (err || !result) {
-                console.log('senha incorreta.')
-                return res.send('senha incorreta. ')
+                console.log(`erro em tentativa de login: senha incorreta.`)
+                return res.status(400).send({error: "erro. senha incorreta"})
             } else {
                 let id = teste.id
                 let token = jwt.sign({ id }, chaveSecreta, {
                     expiresIn: 1800
                 })
-                return res.json({
+                console.log(`sucesso em tentativa de login: usuario logado. conta: ${teste}`)
+                return res.status(200).json({
                     auth: true,
-                    messagem: "voce se conectou a conta. ",
+                    messagem: "voce se conectou a uma conta.",
                     token: token
                 })
             }

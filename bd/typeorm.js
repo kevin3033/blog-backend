@@ -6,7 +6,7 @@ const dataSource = new typeorm.DataSource({
     port: "3306",
     username: "seuusuario",
     password: "suasenha",
-    database: "teste2",
+    database: "teste3",
     synchronize: true,
     entities: require("../entity/index")
 })

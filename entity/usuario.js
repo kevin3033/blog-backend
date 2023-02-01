@@ -3,6 +3,10 @@ const EntitySchema = require("typeorm").EntitySchema
 const usuario = new EntitySchema({
     tableName: "usuarios",
     columns: {
+        usuario: {
+            type: "varchar",
+            unique: true
+        },
         email: {
             type: "varchar",
             unique: true
