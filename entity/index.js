@@ -1,1 +1,1 @@
-module.exports = [require("./usuario")]
+module.exports = [require("./usuario"), require("./post")]

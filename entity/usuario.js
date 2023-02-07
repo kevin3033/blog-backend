@@ -1,7 +1,8 @@
 const EntitySchema = require("typeorm").EntitySchema
 
-const usuario = new EntitySchema({
-    tableName: "usuarios",
+const usuarioEntity = new EntitySchema({
+
+    name: "usuarios",
     columns: {
         usuario: {
             type: "varchar",
@@ -22,4 +23,4 @@ const usuario = new EntitySchema({
     }
 })
 
-module.exports = usuario
+module.exports = usuarioEntity

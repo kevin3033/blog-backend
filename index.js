@@ -2,7 +2,7 @@ const express = require('express')
 
 const bd = require("./bd/typeorm")
 
-const { cadastro, login } = require('./router/index')
+const { cadastro, login, post } = require('./router/index')
 
 bd.initialize()
     .then(() => {
@@ -13,6 +13,7 @@ bd.initialize()
         //rotas
         app.use("/cadastro", cadastro)
         app.use('/login', login)
+        app.use('/post', post)
         app.listen(3000, () => {
             console.log("servidor iniciado. backend rodando.");
         })
